@@ -1,0 +1,6 @@
+# Config files with sensitive keys
+local-config.js
+
+# OS generated files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,20 @@
+# Stock Dashboard
+
+A single-page Stock Dashboard using vanilla HTML, CSS, and JavaScript.
+
+## Features
+- Real-time stock quotes via Twelve Data API
+- No build step, no NPM required
+- Watchlist stored in local storage
+- Configurable auto-refresh limits
+
+## Setup & Run
+1. Open `index.html` in your web browser.
+2. Enter your [Twelve Data API Key](https://twelvedata.com/) in the top right corner of the application to start fetching data.
+3. Add your favorite stock tickers.
+
+## Deployment (Vercel / GitHub Pages)
+This project is 100% static frontend. You can deploy it directly to Vercel, GitHub Pages, or Netlify without any configuration.
+- Push the repository to GitHub.
+- Import the repository in Vercel.
+- Done! The API key can be safely entered by the user in the browser when they visit your Vercel URL.

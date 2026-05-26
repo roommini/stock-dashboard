@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <header class="header">
+      <h1>Stock Dashboard</h1>
+      <div class="status-panel">
+        <div class="status-item">
+          <span class="label">Market:</span>
+          <span id="market-status" class="value">Checking...</span>
+        </div>
+        <div class="status-item">
+          <span class="label">Connection:</span>
+          <span id="connection-status" class="value">Checking...</span>
+        </div>
+        <div class="status-item">
+          <span class="label">Last Updated:</span>
+          <span id="last-updated" class="value">—</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="controls-section">
+        <div class="add-ticker-form">
+          <input type="text" id="ticker-input" placeholder="Enter ticker (e.g., AAPL, TSLA)">
+          <button id="add-ticker-btn" class="btn btn-primary">Add Ticker</button>
+        </div>
+        <div class="refresh-controls">
+          <button id="refresh-btn" class="btn btn-secondary">Refresh Now</button>
+          <div class="auto-refresh">
+            <label for="auto-refresh-select">Auto-Refresh:</label>
+            <select id="auto-refresh-select">
+              <option value="0">Off</option>
+              <option value="30">30s</option>
+              <option value="60">1m</option>
+              <option value="300">5m</option>
+            </select>
+          </div>
+        </div>
+        <div class="add-ticker-form" style="margin-top: 15px; width: 100%; display: flex; justify-content: flex-end;">
+          <input type="password" id="api-key-input" placeholder="Twelve Data API Key" style="width: 200px;">
+          <button id="save-key-btn" class="btn btn-secondary">Save Key</button>
+        </div>
+      </div>
+
+      <div id="error-message" class="error-message hidden"></div>
+
+      <div class="table-container">
+        <table id="watchlist-table">
+          <thead>
+            <tr>
+              <th>Ticker</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Day's Change</th>
+              <th>Day's Change %</th>
+              <th>365 Day's Change</th>
+              <th>1 Year Return</th>
+              <th>52W High</th>
+              <th>52W Low</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="watchlist-body">
+            <!-- Rows will be generated here -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script src="local-config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
