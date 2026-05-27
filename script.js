@@ -32,6 +32,45 @@ const els = {
 };
 
 // Utils
+const generateSparkline = (history, ticker) => {
+  if (!history || history.length === 0) return '—';
+  
+  // Use last 30 days for the sparkline to make it look active
+  const recentHistory = history.slice(-30);
+  if (recentHistory.length === 0) return '—';
+
+  const width = 100;
+  const height = 30;
+  const min = Math.min(...recentHistory);
+  const max = Math.max(...recentHistory);
+  const range = max - min || 1;
+
+  const points = recentHistory.map((val, i) => {
+    const x = (i / (recentHistory.length - 1)) * width;
+    const y = height - ((val - min) / range) * height;
+    return `${x},${y}`;
+  }).join(' ');
+
+  const isPositive = recentHistory[recentHistory.length - 1] >= recentHistory[0];
+  const colorRGB = isPositive ? '40, 167, 69' : '220, 53, 69';
+  const strokeColor = isPositive ? 'var(--success-color)' : 'var(--danger-color)';
+  
+  const gradId = `grad-${ticker}-${Math.random().toString(36).substr(2, 5)}`;
+
+  return `
+    <svg viewBox="0 -2 100 37" class="sparkline" style="width: 80px; height: 35px; overflow: visible;">
+      <defs>
+        <linearGradient id="${gradId}" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="rgba(${colorRGB}, 0.3)" />
+          <stop offset="100%" stop-color="rgba(${colorRGB}, 0)" />
+        </linearGradient>
+      </defs>
+      <polygon points="0,35 ${points} 100,35" fill="url(#${gradId})" />
+      <polyline points="${points}" fill="none" stroke="${strokeColor}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  `;
+};
+
 const formatCurrency = (value) => {
   if (value === null || value === undefined || value === '—') return '—';
   const num = parseFloat(value);
@@ -125,9 +164,10 @@ const fetchTimeSeries1Year = async (symbol) => {
     if (data.status === 'error') throw new Error(data.message || 'API Error');
     
     if (data.values && data.values.length > 0) {
-      const yearAgoData = data.values[data.values.length - 1]; // Oldest data point
+      const prices = data.values.map(v => parseFloat(v.close)).reverse(); // oldest to newest
       const result = {
-        close1YrAgo: parseFloat(yearAgoData.close)
+        close1YrAgo: prices[0],
+        history: prices
       };
       state.timeSeriesCache[symbol] = { timestamp: Date.now(), data: result };
       localStorage.setItem('dashboard_ts_cache', JSON.stringify(state.timeSeriesCache));
@@ -222,6 +262,7 @@ const updateData = async () => {
           changePercent: quoteData.percent_change,
           yearChange: yearChange,
           yearReturn: yearReturn,
+          history: tsData ? tsData.history : null,
           high52: high52,
           low52: low52
         };
@@ -265,6 +306,7 @@ const renderTable = () => {
         <td>—</td>
         <td>—</td>
         <td>—</td>
+        <td>—</td>
         <td><button class="btn btn-danger remove-btn" data-symbol="${symbol}">Remove</button></td>
       `;
     } else {
@@ -276,6 +318,7 @@ const renderTable = () => {
         <td class="${getChangeClass(data.changePercent)}">${formatPercent(data.changePercent)}</td>
         <td class="${getChangeClass(data.yearChange)}">${formatCurrency(data.yearChange)}</td>
         <td class="${getChangeClass(data.yearReturn)}">${formatPercent(data.yearReturn)}</td>
+        <td>${generateSparkline(data.history, data.ticker)}</td>
         <td>${formatCurrency(data.high52)}</td>
         <td>${formatCurrency(data.low52)}</td>
         <td><button class="btn btn-danger remove-btn" data-symbol="${data.ticker}">Remove</button></td>
