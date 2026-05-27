@@ -151,7 +151,17 @@ const loadChart = async (tf) => {
       if (data.status === 'error') throw new Error(data.message);
       if (!data.values) throw new Error('No chart data available for this timeframe.');
       
-      tsData = data.values.reverse(); // oldest to newest
+      tsData = data.values.reverse().map(d => {
+        // Convert 'YYYY-MM-DD HH:MM:SS' to local timestamp in seconds
+        const dt = new Date(d.datetime);
+        return {
+          time: Math.floor(dt.getTime() / 1000),
+          open: parseFloat(d.open),
+          high: parseFloat(d.high),
+          low: parseFloat(d.low),
+          close: parseFloat(d.close)
+        };
+      });
       setCache(cacheKey, tsData);
     } catch (e) {
       showError('Chart error: ' + e.message);
@@ -167,82 +177,95 @@ const loadChart = async (tf) => {
 };
 
 const renderChart = (data, tf) => {
-  const ctx = document.getElementById('price-chart').getContext('2d');
+  const container = document.getElementById('chart-container-div');
   
-  const labels = data.map(d => {
-    const date = new Date(d.datetime);
-    if (['1D', '5D'].includes(tf)) {
-      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    }
-    return date.toLocaleDateString();
-  });
-  
-  const prices = data.map(d => parseFloat(d.close));
-  
-  const isPositive = prices[prices.length - 1] >= prices[0];
-  const color = isPositive ? '#28a745' : '#dc3545';
-  const bgGradient = ctx.createLinearGradient(0, 0, 0, 400);
-  bgGradient.addColorStop(0, isPositive ? 'rgba(40,167,69,0.2)' : 'rgba(220,53,69,0.2)');
-  bgGradient.addColorStop(1, 'rgba(0,0,0,0)');
-
   if (chartInstance) {
-    chartInstance.destroy();
+    chartInstance.remove();
+    chartInstance = null;
   }
+  
+  container.innerHTML = '';
 
-  Chart.defaults.color = '#a0aabc';
-  Chart.defaults.font.family = "'Inter', sans-serif";
-
-  chartInstance = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Close Price',
-        data: prices,
-        borderColor: color,
-        backgroundColor: bgGradient,
-        borderWidth: 2,
-        pointRadius: 0,
-        pointHoverRadius: 4,
-        fill: true,
-        tension: 0.1
-      }]
+  const chartOptions = { 
+    layout: { 
+      textColor: '#a0aabc', 
+      background: { type: 'solid', color: 'transparent' } 
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: {
-        mode: 'index',
-        intersect: false,
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#1f2229',
-          titleColor: '#ffffff',
-          bodyColor: '#ffffff',
-          borderColor: '#2d333b',
-          borderWidth: 1,
-          displayColors: false,
-          callbacks: {
-            label: (ctx) => formatCurrency(ctx.parsed.y)
-          }
-        }
-      },
-      scales: {
-        x: {
-          grid: { color: '#2d333b', drawBorder: false },
-          ticks: { maxTicksLimit: 8 }
-        },
-        y: {
-          grid: { color: '#2d333b', drawBorder: false },
-          ticks: {
-            callback: (val) => '$' + val
-          }
-        }
-      }
+    grid: {
+      vertLines: { color: '#2d333b' },
+      horzLines: { color: '#2d333b' }
+    },
+    timeScale: {
+      timeVisible: ['1D', '5D'].includes(tf),
+      secondsVisible: false,
+    },
+    rightPriceScale: {
+      borderVisible: false,
     }
-  });
+  };
+  
+  chartInstance = LightweightCharts.createChart(container, chartOptions);
+  
+  // Resize handler
+  new ResizeObserver(entries => {
+    if (entries.length === 0 || entries[0].target !== container) return;
+    const newRect = entries[0].contentRect;
+    chartInstance.applyOptions({ height: newRect.height, width: newRect.width });
+  }).observe(container);
+
+  if (tf === '1D') {
+    const series = chartInstance.addCandlestickSeries({
+      upColor: '#28a745', 
+      downColor: '#dc3545', 
+      borderVisible: false,
+      wickUpColor: '#28a745', 
+      wickDownColor: '#dc3545',
+    });
+    series.setData(data);
+
+    // Calculate Support (Lowest Low) and Demand/Resistance (Highest High)
+    let minLow = Infinity;
+    let maxHigh = -Infinity;
+    data.forEach(d => {
+      if (d.low < minLow) minLow = d.low;
+      if (d.high > maxHigh) maxHigh = d.high;
+    });
+
+    if (data.length > 0) {
+      series.createPriceLine({
+        price: maxHigh,
+        color: '#dc3545',
+        lineWidth: 2,
+        lineStyle: LightweightCharts.LineStyle.Dashed,
+        axisLabelVisible: true,
+        title: 'Resistance (Supply)',
+      });
+
+      series.createPriceLine({
+        price: minLow,
+        color: '#28a745',
+        lineWidth: 2,
+        lineStyle: LightweightCharts.LineStyle.Dashed,
+        axisLabelVisible: true,
+        title: 'Support (Demand)',
+      });
+    }
+  } else {
+    // Other timeframes: Area Chart
+    const isPositive = data[data.length - 1].close >= data[0].close;
+    const color = isPositive ? '#28a745' : '#dc3545';
+    const series = chartInstance.addAreaSeries({
+      lineColor: color,
+      topColor: isPositive ? 'rgba(40,167,69,0.4)' : 'rgba(220,53,69,0.4)',
+      bottomColor: 'rgba(0,0,0,0)',
+      lineWidth: 2,
+    });
+    
+    const lineData = data.map(d => ({ time: d.time, value: d.close }));
+    series.setData(lineData);
+  }
+  
+  chartInstance.timeScale().fitContent();
 };
 
 // Events
