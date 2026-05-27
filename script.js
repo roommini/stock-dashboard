@@ -251,8 +251,8 @@ const updateData = async () => {
             yearReturn = (yearChange / pastPrice) * 100;
         }
 
-        const high52 = (quoteData.fifty_two_week && quoteData.fifty_two_week.high) ? quoteData.fifty_two_week.high : '—';
-        const low52 = (quoteData.fifty_two_week && quoteData.fifty_two_week.low) ? quoteData.fifty_two_week.low : '—';
+        const dayHigh = quoteData.high || '—';
+        const dayLow = quoteData.low || '—';
 
         state.dataCache[symbol] = {
           ticker: symbol,
@@ -263,8 +263,8 @@ const updateData = async () => {
           yearChange: yearChange,
           yearReturn: yearReturn,
           history: tsData ? tsData.history : null,
-          high52: high52,
-          low52: low52
+          dayHigh: dayHigh,
+          dayLow: dayLow
         };
       }
     }
@@ -314,13 +314,13 @@ const renderTable = () => {
         <td><div class="ticker-symbol"><a href="details.html?symbol=${data.ticker}" style="color: inherit; text-decoration: none;" class="hover-underline">${data.ticker}</a></div></td>
         <td><div class="ticker-name" title="${data.name}"><a href="details.html?symbol=${data.ticker}" style="color: inherit; text-decoration: none;" class="hover-underline">${data.name}</a></div></td>
         <td>${formatCurrency(data.price)}</td>
+        <td>${formatCurrency(data.dayHigh)}</td>
+        <td>${formatCurrency(data.dayLow)}</td>
         <td class="${getChangeClass(data.change)}">${formatCurrency(data.change)}</td>
         <td class="${getChangeClass(data.changePercent)}">${formatPercent(data.changePercent)}</td>
         <td class="${getChangeClass(data.yearChange)}">${formatCurrency(data.yearChange)}</td>
         <td class="${getChangeClass(data.yearReturn)}">${formatPercent(data.yearReturn)}</td>
         <td>${generateSparkline(data.history, data.ticker)}</td>
-        <td>${formatCurrency(data.high52)}</td>
-        <td>${formatCurrency(data.low52)}</td>
         <td><button class="btn btn-danger remove-btn" data-symbol="${data.ticker}">Remove</button></td>
       `;
     }
