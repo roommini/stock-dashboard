@@ -48,15 +48,21 @@
       padding-top: 10px;
     }
 
-    /* Grid Layout */
+    /* Main Layout */
     .grid-layout {
-      display: grid;
-      grid-template-columns: 3fr 1fr;
+      display: flex;
+      flex-direction: column;
       gap: 20px;
     }
 
-    @media (max-width: 1024px) {
-      .grid-layout {
+    .bottom-widgets {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .bottom-widgets {
         grid-template-columns: 1fr;
       }
     }
@@ -205,8 +211,8 @@
         </div>
       </div>
 
-      <!-- Sidebar Area -->
-      <div class="sidebar">
+      <!-- Bottom Widgets Area -->
+      <div class="bottom-widgets">
         <!-- Technical Analysis -->
         <div class="widget-box">
           <div class="tradingview-widget-container">
