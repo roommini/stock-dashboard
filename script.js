@@ -206,7 +206,24 @@ const updateData = async () => {
 
     const totalRequestsNeeded = 1 + uncachedTS;
     
-    if (state.autoRefreshInterval > 0) {
+    // Smart Market-Closed Cache (30 min TTL)
+    const closedCacheJSON = localStorage.getItem('dashboard_closed_cache');
+    let useClosedCache = false;
+    let quotes = null;
+
+    if (closedCacheJSON) {
+      const parsed = JSON.parse(closedCacheJSON);
+      const age = Date.now() - parsed.timestamp;
+      if (age < 30 * 60 * 1000) {
+        const hasAllSymbols = state.watchlist.every(sym => parsed.quotes && parsed.quotes[sym]);
+        if (hasAllSymbols) {
+          quotes = parsed.quotes;
+          useClosedCache = true;
+        }
+      }
+    }
+
+    if (!useClosedCache && state.autoRefreshInterval > 0) {
       const requestsPerMin = totalRequestsNeeded * (60 / state.autoRefreshInterval);
       if (requestsPerMin > FREE_PLAN_LIMIT_PER_MIN) {
         state.autoRefreshInterval = 0;
@@ -217,19 +234,35 @@ const updateData = async () => {
       }
     }
 
-    if (totalRequestsNeeded > FREE_PLAN_LIMIT_PER_MIN) {
+    if (!useClosedCache && totalRequestsNeeded > FREE_PLAN_LIMIT_PER_MIN) {
       showError(`Warning: Fetching ${state.watchlist.length} symbols may hit rate limits. Using cache for historical data...`);
     }
 
-    const quotes = await fetchQuotes(state.watchlist);
+    if (!useClosedCache) {
+      quotes = await fetchQuotes(state.watchlist);
+    }
+    
     setConnectionStatus('Connected', 'ok');
     state.lastUpdated = new Date();
-    els.lastUpdated.textContent = state.lastUpdated.toLocaleTimeString();
+    els.lastUpdated.textContent = state.lastUpdated.toLocaleTimeString() + (useClosedCache ? ' (Cached)' : '');
 
     let mktOpen = false;
-    for(const sym in quotes) {
-       if(quotes[sym].is_market_open) { mktOpen = true; }
+    if (!useClosedCache) {
+      for(const sym in quotes) {
+         if(quotes[sym].is_market_open) { mktOpen = true; }
+      }
+      if (!mktOpen) {
+        localStorage.setItem('dashboard_closed_cache', JSON.stringify({
+          timestamp: Date.now(),
+          quotes: quotes
+        }));
+      } else {
+        localStorage.removeItem('dashboard_closed_cache');
+      }
+    } else {
+      mktOpen = false;
     }
+
     els.marketStatus.textContent = mktOpen ? 'Open' : 'Closed';
     els.marketStatus.className = `value status-${mktOpen ? 'ok' : 'warning'}`;
 
