@@ -151,8 +151,8 @@ const loadChart = async (tf) => {
       if (data.status === 'error') throw new Error(data.message);
       if (!data.values) throw new Error('No chart data available for this timeframe.');
       
+      const seen = new Set();
       tsData = data.values.reverse().map(d => {
-        // Convert 'YYYY-MM-DD HH:MM:SS' to local timestamp in seconds
         const dt = new Date(d.datetime);
         return {
           time: Math.floor(dt.getTime() / 1000),
@@ -161,6 +161,10 @@ const loadChart = async (tf) => {
           low: parseFloat(d.low),
           close: parseFloat(d.close)
         };
+      }).filter(d => {
+        if (seen.has(d.time)) return false;
+        seen.add(d.time);
+        return true;
       });
       setCache(cacheKey, tsData);
     } catch (e) {
@@ -177,12 +181,21 @@ const loadChart = async (tf) => {
 };
 
 const renderChart = (data, tf) => {
-  const container = document.getElementById('chart-container-div');
-  
-  if (chartInstance) {
-    chartInstance.remove();
-    chartInstance = null;
-  }
+  try {
+    if (typeof LightweightCharts === 'undefined') {
+      throw new Error('TradingView library failed to load. Please check your internet connection.');
+    }
+    
+    if (!data || data.length === 0) {
+      throw new Error('No chart data available to render.');
+    }
+
+    const container = document.getElementById('chart-container-div');
+    
+    if (chartInstance) {
+      chartInstance.remove();
+      chartInstance = null;
+    }
   
   container.innerHTML = '';
 
@@ -266,6 +279,12 @@ const renderChart = (data, tf) => {
   }
   
   chartInstance.timeScale().fitContent();
+
+  } catch (err) {
+    showError('Render Error: ' + err.message);
+    console.error(err);
+    throw err;
+  }
 };
 
 // Events
