@@ -128,6 +128,7 @@ const TF_SETTINGS = {
   '1Y': { interval: '1day', outputsize: 253 },
   '5Y': { interval: '1week', outputsize: 260 },
   '10Y': { interval: '1month', outputsize: 120 },
+  'Indicator': { interval: '5min', outputsize: 78 }
 };
 
 const loadChart = async (tf) => {
@@ -209,7 +210,7 @@ const renderChart = (data, tf) => {
       horzLines: { color: '#2d333b' }
     },
     timeScale: {
-      timeVisible: ['1D', '5D'].includes(tf),
+      timeVisible: ['1D', '5D', 'Indicator'].includes(tf),
       secondsVisible: false,
     },
     rightPriceScale: {
@@ -226,7 +227,7 @@ const renderChart = (data, tf) => {
     chartInstance.applyOptions({ height: newRect.height, width: newRect.width });
   }).observe(container);
 
-  if (tf === '1D') {
+  if (tf === 'Indicator') {
     const series = chartInstance.addCandlestickSeries({
       upColor: '#28a745', 
       downColor: '#dc3545', 
