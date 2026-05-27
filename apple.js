@@ -294,7 +294,7 @@ const renderChart = (data, tf) => {
     markers.push({
       time: data[data.length - 25].time,
       position: 'belowBar',
-      color: '#f68410',
+      color: '#ffffff',
       textColor: '#ffffff',
       shape: 'arrowUp',
       text: 'Wait AI put in phone',
@@ -304,7 +304,7 @@ const renderChart = (data, tf) => {
     markers.push({
       time: data[data.length - 18].time,
       position: 'belowBar',
-      color: '#2962FF',
+      color: '#ffffff',
       textColor: '#ffffff',
       shape: 'arrowUp',
       text: 'Open AI integrate Apple',
@@ -314,7 +314,7 @@ const renderChart = (data, tf) => {
     markers.push({
       time: data[data.length - 10].time,
       position: 'belowBar',
-      color: '#28a745',
+      color: '#ffffff',
       textColor: '#ffffff',
       shape: 'arrowUp',
       text: 'BUY UP After Posting',
@@ -324,7 +324,7 @@ const renderChart = (data, tf) => {
     markers.push({
       time: data[data.length - 2].time,
       position: 'aboveBar',
-      color: '#dc3545',
+      color: '#ffffff',
       textColor: '#ffffff',
       shape: 'arrowDown',
       text: 'Small Event',
@@ -356,4 +356,4 @@ document.querySelectorAll('.tf-btn').forEach(btn => {
 // Init
 loadQuote();
 loadTradingViewData();
-loadChart('1M');
+loadChart('Indicator');
