@@ -46,8 +46,16 @@
     </div>
 
     <div class="chart-box">
-      <h2>ตัวอย่างกราฟ Apple (AAPL) - แบบ Widget</h2>
-      <p style="margin-bottom: 1rem; font-size: 0.9rem; color: #8b949e;">มีเครื่องมือครบครัน ซูมได้ เปลี่ยน Timeframe ได้ เพิ่ม Indicator ได้เอง ไม่เสียโควต้า API</p>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <div>
+          <h2>ตัวอย่างกราฟ Apple (AAPL) - แบบ Widget</h2>
+          <p style="margin-top: -10px; font-size: 0.9rem; color: #8b949e;">มีเครื่องมือครบครัน ซูมได้ เปลี่ยน Timeframe ได้ เพิ่ม Indicator ได้เอง ไม่เสียโควต้า API</p>
+        </div>
+        <button onclick="document.querySelector('.tradingview-widget-container').requestFullscreen()" style="padding: 8px 16px; background: #238636; color: white; border: none; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 500; display: flex; gap: 6px; align-items: center;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+          Full Chart
+        </button>
+      </div>
       
       <!-- TradingView Widget BEGIN -->
       <div class="tradingview-widget-container" style="height: 600px; width: 100%;">
