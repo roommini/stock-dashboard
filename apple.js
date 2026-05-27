@@ -1,5 +1,4 @@
-const urlParams = new URLSearchParams(window.location.search);
-const symbol = urlParams.get('symbol');
+const symbol = 'AAPL';
 
 const TWELVE_DATA_API_KEY = localStorage.getItem('API_KEY') || '';
 
@@ -287,7 +286,41 @@ const renderChart = (data, tf) => {
     series.setData(lineData);
   }
   
+  // --- DEMO: Mock Event Data for AAPL ---
+  if (symbol === 'AAPL') {
+    const mockEvents = {
+      '2024-04-19': { text: 'Wait AI put in phone for go trend up', color: '#f68410', shape: 'arrowUp', position: 'belowBar' },
+      '2024-06-10': { text: 'Open AI integrate Apple', color: '#2962FF', shape: 'arrowUp', position: 'belowBar' },
+      '2024-07-10': { text: 'BUY UP After Posting', color: '#28a745', shape: 'arrowUp', position: 'belowBar' },
+      '2024-07-24': { text: 'Small Event 24/07/24', color: '#dc3545', shape: 'arrowDown', position: 'aboveBar' }
+    };
+    
+    const markers = [];
+    data.forEach(d => {
+      const dateObj = new Date(d.time * 1000);
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      const dDate = `${year}-${month}-${day}`;
+      
+      if (mockEvents[dDate]) {
+        markers.push({
+          time: d.time,
+          position: mockEvents[dDate].position,
+          color: mockEvents[dDate].color,
+          shape: mockEvents[dDate].shape,
+          text: mockEvents[dDate].text,
+          size: 2
+        });
+      }
+    });
 
+    if (markers.length > 0) {
+      markers.sort((a, b) => a.time - b.time);
+      series.setMarkers(markers);
+    }
+  }
+  // ---------------------------------------
 
   chartInstance.timeScale().fitContent();
 
