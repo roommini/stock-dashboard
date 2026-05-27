@@ -182,7 +182,7 @@ const loadChart = async (tf) => {
   if (container) container.style.opacity = '1';
 };
 
-const renderChart = (data, tf) => {
+const renderChart = async (data, tf) => {
   try {
     if (typeof LightweightCharts === 'undefined') {
       throw new Error('TradingView library failed to load. Please check your internet connection.');
@@ -287,51 +287,41 @@ const renderChart = (data, tf) => {
     series.setData(lineData);
   }
   
-  // --- DEMO: Dynamic Mock Event Data for AAPL ---
-  if (symbol === 'AAPL' && data.length > 30) {
-    const markers = [];
-    
-    markers.push({
-      time: data[data.length - 25].time,
-      position: 'belowBar',
-      color: '#ffffff',
-      textColor: '#ffffff',
-      shape: 'arrowUp',
-      text: 'Wait AI put in phone',
-      size: 2
-    });
+  // --- Fetch Events from Vercel Backend ---
+  try {
+    const res = await fetch(`/api/events?symbol=${symbol}`);
+    if (res.ok) {
+      const dbEvents = await res.json();
+      if (dbEvents && dbEvents.length > 0) {
+        const markers = [];
+        dbEvents.forEach(evt => {
+          // Find matching date in the chart data
+          const match = data.find(d => {
+            const dDate = new Date(d.time * 1000).toISOString().split('T')[0];
+            return dDate === evt.date;
+          });
+          
+          if (match) {
+            markers.push({
+              time: match.time,
+              position: evt.position || 'belowBar',
+              color: evt.color || '#2962FF',
+              textColor: evt.textColor || '#ffffff',
+              shape: evt.shape || 'arrowUp',
+              text: evt.text,
+              size: 2
+            });
+          }
+        });
 
-    markers.push({
-      time: data[data.length - 18].time,
-      position: 'belowBar',
-      color: '#ffffff',
-      textColor: '#ffffff',
-      shape: 'arrowUp',
-      text: 'Open AI integrate Apple',
-      size: 2
-    });
-
-    markers.push({
-      time: data[data.length - 10].time,
-      position: 'belowBar',
-      color: '#ffffff',
-      textColor: '#ffffff',
-      shape: 'arrowUp',
-      text: 'BUY UP After Posting',
-      size: 2
-    });
-
-    markers.push({
-      time: data[data.length - 2].time,
-      position: 'aboveBar',
-      color: '#ffffff',
-      textColor: '#ffffff',
-      shape: 'arrowDown',
-      text: 'Small Event',
-      size: 2
-    });
-
-    series.setMarkers(markers);
+        if (markers.length > 0) {
+          markers.sort((a, b) => a.time - b.time);
+          series.setMarkers(markers);
+        }
+      }
+    }
+  } catch (err) {
+    console.error('Failed to fetch events from backend:', err);
   }
   // ---------------------------------------
 
