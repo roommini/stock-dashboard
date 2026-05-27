@@ -3,95 +3,249 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TradingView Widget Demo</title>
+  <title>TradingView Stocks Dark Solution</title>
   <link rel="stylesheet" href="style.css">
   <style>
     body {
-      padding: 2rem;
+      margin: 0;
+      padding: 0;
       background-color: #0d1117;
       color: #c9d1d9;
       font-family: 'Inter', sans-serif;
     }
-    .demo-container {
-      max-width: 1200px;
+    
+    .ticker-wrapper {
+      width: 100%;
+      background: #161a1e;
+      border-bottom: 1px solid #30363d;
+    }
+
+    .dashboard-container {
+      max-width: 1400px;
       margin: 0 auto;
+      padding: 20px;
     }
-    .demo-header {
-      margin-bottom: 2rem;
+
+    .nav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
     }
-    .demo-header h1 {
+
+    .nav-header a {
       color: #58a6ff;
-      margin-bottom: 0.5rem;
+      text-decoration: none;
+      font-weight: 500;
     }
-    .chart-box {
+
+    .symbol-info-wrapper {
+      margin-bottom: 20px;
       background-color: #161a1e;
       border: 1px solid #30363d;
       border-radius: 8px;
-      padding: 1rem;
-      margin-bottom: 2rem;
+      overflow: hidden;
+      padding-top: 10px;
     }
-    .chart-box h2 {
-      margin-top: 0;
-      margin-bottom: 1rem;
-      color: #28a745;
+
+    /* Grid Layout */
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 3fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 1024px) {
+      .grid-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .main-chart {
+      background-color: #161a1e;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 15px;
+      min-height: 600px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .widget-box {
+      background-color: #161a1e;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 15px;
+      overflow: hidden;
+    }
+
+    /* Custom Header for Main Chart */
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .chart-header h2 {
+      margin: 0;
+      color: #2ea043;
+      font-size: 1.2rem;
+    }
+
+    .tf-btn {
+      padding: 8px 16px;
+      background: #238636;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      display: flex;
+      gap: 6px;
+      align-items: center;
     }
   </style>
 </head>
 <body>
-  <div class="demo-container">
-    <div class="demo-header">
-      <h1>TradingView Advanced Chart Widget (Demo)</h1>
-      <p>เปรียบเทียบการใช้งาน Widget ของ TradingView ที่มีข้อมูลในตัว ไม่ต้องใช้ API ของ Twelve Data</p>
-      <a href="index.html" style="color: #58a6ff; text-decoration: none;">&larr; กลับหน้าหลัก</a>
-    </div>
 
-    <div class="chart-box">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <div>
-          <h2>ตัวอย่างกราฟ Apple (AAPL) - แบบ Widget</h2>
-          <p style="margin-top: -10px; font-size: 0.9rem; color: #8b949e;">มีเครื่องมือครบครัน ซูมได้ เปลี่ยน Timeframe ได้ เพิ่ม Indicator ได้เอง ไม่เสียโควต้า API</p>
-        </div>
-        <button onclick="document.querySelector('.tradingview-widget-container').requestFullscreen()" style="padding: 8px 16px; background: #238636; color: white; border: none; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: 14px; font-weight: 500; display: flex; gap: 6px; align-items: center;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
-          Full Chart
-        </button>
-      </div>
-      
-      <!-- TradingView Widget BEGIN -->
-      <div class="tradingview-widget-container" style="height: 600px; width: 100%;">
-        <div id="tradingview_demo" style="height: 100%; width: 100%;"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-        <script type="text/javascript">
-        new TradingView.widget(
-        {
-        "autosize": true,
-        "symbol": "NASDAQ:AAPL",
-        "interval": "5",
-        "range": "1D",
-        "timezone": "Asia/Bangkok",
-        "theme": "dark",
-        "style": "1",
-        "locale": "th_TH",
-        "enable_publishing": false,
-        "backgroundColor": "#161a1e",
-        "gridColor": "#2d333b",
-        "hide_top_toolbar": false,
-        "hide_legend": false,
-        "save_image": false,
-        "disabled_features": ["header_chart_type"],
-        "studies": [
-          "Volume@tv-basicstudies",
-          "RSI@tv-basicstudies",
-          "MASimple@tv-basicstudies"
-        ],
-        "container_id": "tradingview_demo"
+  <!-- Ticker Tape -->
+  <div class="ticker-wrapper">
+    <div class="tradingview-widget-container">
+      <div class="tradingview-widget-container__widget"></div>
+      <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
+      {
+      "symbols": [
+        { "proName": "NASDAQ:AAPL", "title": "Apple" },
+        { "proName": "NASDAQ:TSLA", "title": "Tesla" },
+        { "proName": "NASDAQ:NVDA", "title": "Nvidia" },
+        { "proName": "NASDAQ:AMZN", "title": "Amazon" },
+        { "proName": "NASDAQ:MSFT", "title": "Microsoft" }
+      ],
+      "showSymbolLogo": true,
+      "colorTheme": "dark",
+      "isTransparent": true,
+      "displayMode": "adaptive",
+      "locale": "th_TH"
       }
-        );
-        </script>
-      </div>
-      <!-- TradingView Widget END -->
-
+      </script>
     </div>
   </div>
+
+  <div class="dashboard-container">
+    <div class="nav-header">
+      <h1 style="margin: 0; font-size: 1.5rem;">Stocks Dark Solution Demo</h1>
+      <a href="index.html">&larr; กลับหน้าหลัก</a>
+    </div>
+
+    <!-- Symbol Info -->
+    <div class="symbol-info-wrapper">
+      <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-info.js" async>
+        {
+        "symbol": "NASDAQ:AAPL",
+        "width": "100%",
+        "locale": "th_TH",
+        "colorTheme": "dark",
+        "isTransparent": true
+        }
+        </script>
+      </div>
+    </div>
+
+    <!-- Grid -->
+    <div class="grid-layout">
+      <!-- Main Chart Area -->
+      <div class="main-chart">
+        <div class="chart-header">
+          <h2>Apple (AAPL)</h2>
+          <button class="tf-btn" onclick="document.querySelector('.tradingview-widget-container.chart-widget').requestFullscreen()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+            Full Chart
+          </button>
+        </div>
+        <!-- Advanced Chart Widget -->
+        <div class="tradingview-widget-container chart-widget" style="flex-grow: 1; min-height: 500px;">
+          <div id="tradingview_demo" style="height: 100%; width: 100%;"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+          <script type="text/javascript">
+          new TradingView.widget({
+            "autosize": true,
+            "symbol": "NASDAQ:AAPL",
+            "interval": "5",
+            "range": "1D",
+            "timezone": "Asia/Bangkok",
+            "theme": "dark",
+            "style": "1",
+            "locale": "th_TH",
+            "enable_publishing": false,
+            "backgroundColor": "#161a1e",
+            "gridColor": "#2d333b",
+            "hide_top_toolbar": false,
+            "hide_legend": false,
+            "save_image": false,
+            "disabled_features": ["header_chart_type"],
+            "studies": [
+              "Volume@tv-basicstudies",
+              "RSI@tv-basicstudies",
+              "MASimple@tv-basicstudies"
+            ],
+            "container_id": "tradingview_demo"
+          });
+          </script>
+        </div>
+      </div>
+
+      <!-- Sidebar Area -->
+      <div class="sidebar">
+        <!-- Technical Analysis -->
+        <div class="widget-box">
+          <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
+            {
+            "interval": "1D",
+            "width": "100%",
+            "isTransparent": true,
+            "height": "400",
+            "symbol": "NASDAQ:AAPL",
+            "showIntervalTabs": true,
+            "displayMode": "single",
+            "locale": "th_TH",
+            "colorTheme": "dark"
+            }
+            </script>
+          </div>
+        </div>
+
+        <!-- Company Profile -->
+        <div class="widget-box">
+          <div class="tradingview-widget-container">
+            <div class="tradingview-widget-container__widget"></div>
+            <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-symbol-profile.js" async>
+            {
+            "width": "100%",
+            "height": "350",
+            "colorTheme": "dark",
+            "isTransparent": true,
+            "symbol": "NASDAQ:AAPL",
+            "locale": "th_TH"
+            }
+            </script>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>
