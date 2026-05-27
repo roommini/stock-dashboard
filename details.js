@@ -132,10 +132,10 @@ const TF_SETTINGS = {
 
 const loadChart = async (tf) => {
   const loader = document.getElementById('chart-loader');
-  const canvas = document.getElementById('price-chart');
+  const container = document.getElementById('chart-container-div');
   
   loader.classList.remove('hidden');
-  canvas.style.opacity = '0.5';
+  if (container) container.style.opacity = '0.5';
   hideError();
 
   const settings = TF_SETTINGS[tf];
@@ -166,14 +166,14 @@ const loadChart = async (tf) => {
     } catch (e) {
       showError('Chart error: ' + e.message);
       loader.classList.add('hidden');
-      canvas.style.opacity = '1';
+      if (container) container.style.opacity = '1';
       return;
     }
   }
 
   renderChart(tsData, tf);
   loader.classList.add('hidden');
-  canvas.style.opacity = '1';
+  if (container) container.style.opacity = '1';
 };
 
 const renderChart = (data, tf) => {
