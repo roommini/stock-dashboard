@@ -74,49 +74,51 @@ const loadQuote = async () => {
   }
 };
 
-// Fetch Profile
-const loadProfile = async () => {
-  const cacheKey = `profile_${symbol}`;
-  const cached = getCache(cacheKey);
+// Load TradingView Widgets
+const loadTVWidget = (containerId, scriptUrl, config) => {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
   
-  if (cached) {
-    renderProfile(cached);
-    return;
-  }
-
-  try {
-    const res = await fetch(`https://api.twelvedata.com/profile?symbol=${symbol}&apikey=${TWELVE_DATA_API_KEY}`);
-    const data = await res.json();
-    if (data.status === 'error') throw new Error(data.message);
-    
-    setCache(cacheKey, data);
-    renderProfile(data);
-  } catch (e) {
-    document.getElementById('profile-loader').textContent = 'Profile data not available on free tier for some symbols.';
-  }
+  const innerDiv = document.createElement('div');
+  innerDiv.className = "tradingview-widget-container__widget";
+  
+  const script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = scriptUrl;
+  script.async = true;
+  script.innerHTML = JSON.stringify(config);
+  
+  const wrapper = document.createElement('div');
+  wrapper.className = "tradingview-widget-container";
+  wrapper.style.height = "100%";
+  wrapper.style.width = "100%";
+  
+  wrapper.appendChild(innerDiv);
+  wrapper.appendChild(script);
+  container.appendChild(wrapper);
 };
 
-const renderProfile = (data) => {
-  document.getElementById('profile-loader').classList.add('hidden');
-  document.getElementById('profile-content').classList.remove('hidden');
-  
-  document.getElementById('profile-desc').textContent = data.description || 'No description available.';
-  document.getElementById('prof-sector').textContent = data.sector || '—';
-  document.getElementById('prof-industry').textContent = data.industry || '—';
-  document.getElementById('prof-employees').textContent = data.employees ? parseInt(data.employees).toLocaleString() : '—';
-  document.getElementById('prof-exchange').textContent = data.exchange || '—';
-  
-  const location = [data.city, data.state, data.country].filter(Boolean).join(', ');
-  document.getElementById('prof-location').textContent = location || '—';
-  
-  const webEl = document.getElementById('prof-website');
-  if (data.website) {
-    webEl.href = data.website;
-    webEl.textContent = data.website.replace(/^https?:\/\//, '');
-  } else {
-    webEl.textContent = '—';
-    webEl.removeAttribute('href');
-  }
+const loadTradingViewData = () => {
+  loadTVWidget('tv-profile-container', 'https://s3.tradingview.com/external-embedding/embed-widget-symbol-profile.js', {
+    "width": "100%",
+    "height": "100%",
+    "colorTheme": "dark",
+    "isTransparent": true,
+    "symbol": symbol,
+    "locale": "th_TH"
+  });
+
+  loadTVWidget('tv-financials-container', 'https://s3.tradingview.com/external-embedding/embed-widget-financials.js', {
+    "colorTheme": "dark",
+    "isTransparent": true,
+    "largeChartUrl": "",
+    "displayMode": "regular",
+    "width": "100%",
+    "height": "100%",
+    "symbol": symbol,
+    "locale": "th_TH"
+  });
 };
 
 // Time Series Settings
@@ -305,5 +307,5 @@ document.querySelectorAll('.tf-btn').forEach(btn => {
 
 // Init
 loadQuote();
-loadProfile();
+loadTradingViewData();
 loadChart('1M');

@@ -42,39 +42,14 @@
         <div id="chart-loader" class="loader hidden">Loading chart data...</div>
       </section>
 
-      <!-- Profile Section -->
-      <section class="card profile-section">
-        <h2>Company Profile</h2>
-        <div id="profile-loader" class="loader">Loading profile...</div>
-        <div id="profile-content" class="hidden">
-          <p id="profile-desc" style="line-height: 1.6; color: var(--text-secondary); margin-bottom: 20px; font-size: 0.95rem;"></p>
-          <div class="profile-grid">
-            <div class="profile-item">
-              <span class="label">Sector</span>
-              <span class="value" id="prof-sector">—</span>
-            </div>
-            <div class="profile-item">
-              <span class="label">Industry</span>
-              <span class="value" id="prof-industry">—</span>
-            </div>
-            <div class="profile-item">
-              <span class="label">Employees</span>
-              <span class="value" id="prof-employees">—</span>
-            </div>
-            <div class="profile-item">
-              <span class="label">Exchange</span>
-              <span class="value" id="prof-exchange">—</span>
-            </div>
-            <div class="profile-item">
-              <span class="label">Location</span>
-              <span class="value" id="prof-location">—</span>
-            </div>
-            <div class="profile-item">
-              <span class="label">Website</span>
-              <a href="#" target="_blank" class="value" id="prof-website" style="color: var(--primary-color);">—</a>
-            </div>
-          </div>
-        </div>
+      <!-- TradingView Profile Section -->
+      <section class="card tv-profile-section" style="padding: 0; overflow: hidden; height: 400px; margin-bottom: 20px;">
+        <div id="tv-profile-container" style="height: 100%; width: 100%;"></div>
+      </section>
+
+      <!-- TradingView Financials Section -->
+      <section class="card tv-financials-section" style="padding: 0; overflow: hidden; height: 830px;">
+        <div id="tv-financials-container" style="height: 100%; width: 100%;"></div>
       </section>
     </main>
   </div>
