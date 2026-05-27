@@ -12,7 +12,7 @@ const state = {
   connectionStatus: 'Disconnected',
   refreshTimer: null,
   dataCache: {},
-  timeSeriesCache: JSON.parse(localStorage.getItem('dashboard_ts_cache')) || {},
+  timeSeriesCache: JSON.parse(localStorage.getItem('dashboard_ts_cache_v2')) || {},
   isLoading: false,
 };
 
@@ -119,7 +119,7 @@ const cleanupTSCache = () => {
     }
   }
   if (updated) {
-    localStorage.setItem('dashboard_ts_cache', JSON.stringify(state.timeSeriesCache));
+    localStorage.setItem('dashboard_ts_cache_v2', JSON.stringify(state.timeSeriesCache));
   }
 };
 
@@ -148,7 +148,7 @@ const fetchTimeSeries1Year = async (symbol) => {
   // Check cache
   if (state.timeSeriesCache[symbol]) {
     const cached = state.timeSeriesCache[symbol];
-    if (Date.now() - cached.timestamp < 12 * 60 * 60 * 1000) {
+    if (Date.now() - cached.timestamp < 12 * 60 * 60 * 1000 && cached.data.history) {
       return cached.data;
     }
   }
@@ -170,7 +170,7 @@ const fetchTimeSeries1Year = async (symbol) => {
         history: prices
       };
       state.timeSeriesCache[symbol] = { timestamp: Date.now(), data: result };
-      localStorage.setItem('dashboard_ts_cache', JSON.stringify(state.timeSeriesCache));
+      localStorage.setItem('dashboard_ts_cache_v2', JSON.stringify(state.timeSeriesCache));
       return result;
     }
     return null;
