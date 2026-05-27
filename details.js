@@ -106,7 +106,7 @@ const loadTradingViewData = () => {
     "colorTheme": "dark",
     "isTransparent": true,
     "symbol": symbol,
-    "locale": "th_TH"
+    "locale": "en"
   });
 
   loadTVWidget('tv-financials-container', 'https://s3.tradingview.com/external-embedding/embed-widget-financials.js', {
