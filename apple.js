@@ -286,39 +286,47 @@ const renderChart = (data, tf) => {
     series.setData(lineData);
   }
   
-  // --- DEMO: Mock Event Data for AAPL ---
-  if (symbol === 'AAPL') {
-    const mockEvents = {
-      '2024-04-19': { text: 'Wait AI put in phone for go trend up', color: '#f68410', shape: 'arrowUp', position: 'belowBar' },
-      '2024-06-10': { text: 'Open AI integrate Apple', color: '#2962FF', shape: 'arrowUp', position: 'belowBar' },
-      '2024-07-10': { text: 'BUY UP After Posting', color: '#28a745', shape: 'arrowUp', position: 'belowBar' },
-      '2024-07-24': { text: 'Small Event 24/07/24', color: '#dc3545', shape: 'arrowDown', position: 'aboveBar' }
-    };
-    
+  // --- DEMO: Dynamic Mock Event Data for AAPL ---
+  if (symbol === 'AAPL' && data.length > 30) {
     const markers = [];
-    data.forEach(d => {
-      const dateObj = new Date(d.time * 1000);
-      const year = dateObj.getFullYear();
-      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-      const day = String(dateObj.getDate()).padStart(2, '0');
-      const dDate = `${year}-${month}-${day}`;
-      
-      if (mockEvents[dDate]) {
-        markers.push({
-          time: d.time,
-          position: mockEvents[dDate].position,
-          color: mockEvents[dDate].color,
-          shape: mockEvents[dDate].shape,
-          text: mockEvents[dDate].text,
-          size: 2
-        });
-      }
+    
+    markers.push({
+      time: data[data.length - 25].time,
+      position: 'belowBar',
+      color: '#f68410',
+      shape: 'arrowUp',
+      text: 'Wait AI put in phone',
+      size: 2
     });
 
-    if (markers.length > 0) {
-      markers.sort((a, b) => a.time - b.time);
-      series.setMarkers(markers);
-    }
+    markers.push({
+      time: data[data.length - 18].time,
+      position: 'belowBar',
+      color: '#2962FF',
+      shape: 'arrowUp',
+      text: 'Open AI integrate Apple',
+      size: 2
+    });
+
+    markers.push({
+      time: data[data.length - 10].time,
+      position: 'belowBar',
+      color: '#28a745',
+      shape: 'arrowUp',
+      text: 'BUY UP After Posting',
+      size: 2
+    });
+
+    markers.push({
+      time: data[data.length - 2].time,
+      position: 'aboveBar',
+      color: '#dc3545',
+      shape: 'arrowDown',
+      text: 'Small Event',
+      size: 2
+    });
+
+    series.setMarkers(markers);
   }
   // ---------------------------------------
 
