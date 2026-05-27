@@ -295,6 +295,7 @@ const renderChart = (data, tf) => {
       time: data[data.length - 25].time,
       position: 'belowBar',
       color: '#f68410',
+      textColor: '#ffffff',
       shape: 'arrowUp',
       text: 'Wait AI put in phone',
       size: 2
@@ -304,6 +305,7 @@ const renderChart = (data, tf) => {
       time: data[data.length - 18].time,
       position: 'belowBar',
       color: '#2962FF',
+      textColor: '#ffffff',
       shape: 'arrowUp',
       text: 'Open AI integrate Apple',
       size: 2
@@ -313,6 +315,7 @@ const renderChart = (data, tf) => {
       time: data[data.length - 10].time,
       position: 'belowBar',
       color: '#28a745',
+      textColor: '#ffffff',
       shape: 'arrowUp',
       text: 'BUY UP After Posting',
       size: 2
@@ -322,6 +325,7 @@ const renderChart = (data, tf) => {
       time: data[data.length - 2].time,
       position: 'aboveBar',
       color: '#dc3545',
+      textColor: '#ffffff',
       shape: 'arrowDown',
       text: 'Small Event',
       size: 2
