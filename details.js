@@ -251,7 +251,7 @@ const renderChart = (data, tf) => {
         lineWidth: 2,
         lineStyle: LightweightCharts.LineStyle.Dashed,
         axisLabelVisible: true,
-        title: 'Resistance (Supply)',
+        title: 'Resistance',
       });
 
       series.createPriceLine({
@@ -260,7 +260,7 @@ const renderChart = (data, tf) => {
         lineWidth: 2,
         lineStyle: LightweightCharts.LineStyle.Dashed,
         axisLabelVisible: true,
-        title: 'Support (Demand)',
+        title: 'Support',
       });
     }
   } else {
