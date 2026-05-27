@@ -128,7 +128,7 @@ const TF_SETTINGS = {
   '1Y': { interval: '1day', outputsize: 253 },
   '5Y': { interval: '1week', outputsize: 260 },
   '10Y': { interval: '1month', outputsize: 120 },
-  'Indicator': { interval: '5min', outputsize: 78 }
+  'Indicator': { interval: '5min', outputsize: 390 } // 5 days of history
 };
 
 const loadChart = async (tf) => {
@@ -237,13 +237,19 @@ const renderChart = (data, tf) => {
     });
     series.setData(data);
 
-    // Calculate Support (Lowest Low) and Demand/Resistance (Highest High)
+    // Calculate Support (Lowest Low) and Demand/Resistance (Highest High) for the LATEST DAY only
     let minLow = Infinity;
     let maxHigh = -Infinity;
-    data.forEach(d => {
-      if (d.low < minLow) minLow = d.low;
-      if (d.high > maxHigh) maxHigh = d.high;
-    });
+    if (data.length > 0) {
+      const lastDate = new Date(data[data.length - 1].time * 1000).toLocaleDateString();
+      data.forEach(d => {
+        const dDate = new Date(d.time * 1000).toLocaleDateString();
+        if (dDate === lastDate) {
+          if (d.low < minLow) minLow = d.low;
+          if (d.high > maxHigh) maxHigh = d.high;
+        }
+      });
+    }
 
     if (data.length > 0) {
       series.createPriceLine({
