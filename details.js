@@ -140,7 +140,7 @@ const loadChart = async (tf) => {
   hideError();
 
   const settings = TF_SETTINGS[tf];
-  const cacheKey = `chart_tv_${symbol}_${tf}`;
+  const cacheKey = `chart_v3_${symbol}_${tf}`;
   let tsData = getCache(cacheKey);
 
   if (!tsData) {
