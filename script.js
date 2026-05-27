@@ -311,8 +311,8 @@ const renderTable = () => {
       `;
     } else {
       tr.innerHTML = `
-        <td><div class="ticker-symbol">${data.ticker}</div></td>
-        <td><div class="ticker-name" title="${data.name}">${data.name}</div></td>
+        <td><div class="ticker-symbol"><a href="details.html?symbol=${data.ticker}" style="color: inherit; text-decoration: none;" class="hover-underline">${data.ticker}</a></div></td>
+        <td><div class="ticker-name" title="${data.name}"><a href="details.html?symbol=${data.ticker}" style="color: inherit; text-decoration: none;" class="hover-underline">${data.name}</a></div></td>
         <td>${formatCurrency(data.price)}</td>
         <td class="${getChangeClass(data.change)}">${formatCurrency(data.change)}</td>
         <td class="${getChangeClass(data.changePercent)}">${formatPercent(data.changePercent)}</td>

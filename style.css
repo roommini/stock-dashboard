@@ -238,11 +238,16 @@ tbody tr:last-child td {
 
 .ticker-name {
   color: var(--text-secondary);
-  font-size: 13px;
-  max-width: 200px;
+  font-size: 0.9rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+.hover-underline:hover {
+  text-decoration: underline !important;
+  color: var(--primary-color) !important;
 }
 
 .loading-row td {

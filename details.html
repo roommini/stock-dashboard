@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Company Details</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="details.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="dashboard-container">
+    <header class="header">
+      <a href="index.html" class="btn btn-secondary" style="margin-right: 15px; text-decoration: none;">&larr; Back</a>
+      <div style="flex-grow: 1;">
+        <h1 id="ticker-symbol" style="margin: 0; font-size: 1.5rem;">Loading...</h1>
+        <div id="company-name" style="color: var(--text-secondary); font-size: 0.9rem;">—</div>
+      </div>
+      <div style="text-align: right;">
+        <div id="live-price" style="font-size: 1.5rem; font-weight: 600;">—</div>
+        <div id="live-change" style="font-size: 0.9rem;">—</div>
+      </div>
+    </header>
+
+    <main>
+      <div id="error-message" class="error-message hidden"></div>
+
+      <!-- Chart Section -->
+      <section class="card chart-section">
+        <div class="timeframe-controls">
+          <button class="tf-btn" data-tf="1D">1D</button>
+          <button class="tf-btn" data-tf="5D">5D</button>
+          <button class="tf-btn active" data-tf="1M">1M</button>
+          <button class="tf-btn" data-tf="6M">6M</button>
+          <button class="tf-btn" data-tf="1Y">1Y</button>
+          <button class="tf-btn" data-tf="5Y">5Y</button>
+          <button class="tf-btn" data-tf="10Y">10Y</button>
+        </div>
+        <div class="chart-container">
+          <canvas id="price-chart"></canvas>
+        </div>
+        <div id="chart-loader" class="loader hidden">Loading chart data...</div>
+      </section>
+
+      <!-- Profile Section -->
+      <section class="card profile-section">
+        <h2>Company Profile</h2>
+        <div id="profile-loader" class="loader">Loading profile...</div>
+        <div id="profile-content" class="hidden">
+          <p id="profile-desc" style="line-height: 1.6; color: var(--text-secondary); margin-bottom: 20px; font-size: 0.95rem;"></p>
+          <div class="profile-grid">
+            <div class="profile-item">
+              <span class="label">Sector</span>
+              <span class="value" id="prof-sector">—</span>
+            </div>
+            <div class="profile-item">
+              <span class="label">Industry</span>
+              <span class="value" id="prof-industry">—</span>
+            </div>
+            <div class="profile-item">
+              <span class="label">Employees</span>
+              <span class="value" id="prof-employees">—</span>
+            </div>
+            <div class="profile-item">
+              <span class="label">Exchange</span>
+              <span class="value" id="prof-exchange">—</span>
+            </div>
+            <div class="profile-item">
+              <span class="label">Location</span>
+              <span class="value" id="prof-location">—</span>
+            </div>
+            <div class="profile-item">
+              <span class="label">Website</span>
+              <a href="#" target="_blank" class="value" id="prof-website" style="color: var(--primary-color);">—</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="details.js"></script>
+</body>
+</html>
