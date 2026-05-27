@@ -228,8 +228,9 @@ const renderChart = (data, tf) => {
     chartInstance.applyOptions({ height: newRect.height, width: newRect.width });
   }).observe(container);
 
+  let series;
   if (tf === 'Indicator') {
-    const series = chartInstance.addCandlestickSeries({
+    series = chartInstance.addCandlestickSeries({
       upColor: '#28a745', 
       downColor: '#dc3545', 
       borderVisible: false,
@@ -275,7 +276,7 @@ const renderChart = (data, tf) => {
     // Other timeframes: Area Chart
     const isPositive = data[data.length - 1].close >= data[0].close;
     const color = isPositive ? '#28a745' : '#dc3545';
-    const series = chartInstance.addAreaSeries({
+    series = chartInstance.addAreaSeries({
       lineColor: color,
       topColor: isPositive ? 'rgba(40,167,69,0.4)' : 'rgba(220,53,69,0.4)',
       bottomColor: 'rgba(0,0,0,0)',
